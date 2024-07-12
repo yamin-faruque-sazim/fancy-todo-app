@@ -35,5 +35,4 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   );
   
 };
-
 export default TaskList;
