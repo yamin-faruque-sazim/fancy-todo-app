@@ -5,5 +5,4 @@ export interface Task {
     priority: number
     dueDate: Date 
     completed: boolean; 
-
 }

@@ -31,5 +31,4 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
     </div>
   );
 };
-
 export default TaskList;
