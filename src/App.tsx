@@ -1,11 +1,13 @@
-import { useState } from "react";
+import MainContainer from "./components/MainContainer";
 
-function App() {
+import "./App.css";
+import "./index.css";
+
+const App: React.FC = () => {
   return (
     <>
-      <h1>APP</h1>
+      <MainContainer />
     </>
   );
-}
-
+};
 export default App;
