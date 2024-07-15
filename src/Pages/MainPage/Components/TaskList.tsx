@@ -1,17 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Container, Button, Group, Divider } from "@mantine/core";
+import { Container, Button, Group, Divider, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 import { Task } from "../../../types/Task";
 
 interface TaskListProps {
   tasks: Task[];
-  deleteTask: (id: string) => void
+  deleteTask: (id: string) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
+
+  const openModalHandler = (id: string) => {
+    setTaskIdToDelete(id);
+    open();
+  };
+
+  const deleteTaskHandler = () => {
+    if (taskIdToDelete) {
+      deleteTask(taskIdToDelete);
+      close();
+      setTaskIdToDelete(null);
+    }
+  };
+
   return (
     <div>
+      <Modal opened={opened} onClose={close} title="Are you sure?" centered>
+        <Group>
+          <Button onClick={deleteTaskHandler} color="red">
+            Yes
+          </Button>
+          <Button onClick={close}>No</Button>
+        </Group>
+      </Modal>
       {tasks.map((task) => (
         <Container key={task.id} p="md" mb="md">
           <h3>Title: {task.title}</h3>
@@ -27,7 +52,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
             </p>
             <p>Due Date: {task.dueDate.toDateString()}</p>
           </Group>
-          <Button onClick = { () => deleteTask(task.id)} color="red">Delete</Button>
+          <Button onClick={() => openModalHandler(task.id)} color="red">
+            Delete
+          </Button>
           <Divider mt={30} size="xs" />
         </Container>
       ))}
