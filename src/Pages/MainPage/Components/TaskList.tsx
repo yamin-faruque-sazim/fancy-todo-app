@@ -2,7 +2,7 @@ import React from "react";
 
 import { Container, Button, Group, Divider } from "@mantine/core";
 
-import { Task } from "../types/Task";
+import { Task } from "../../../types/Task";
 
 interface TaskListProps {
   tasks: Task[];

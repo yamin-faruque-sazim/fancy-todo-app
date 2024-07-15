@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { Task } from "../types/Task";
-import TaskForm from "./TaskForm";
-import TaskList from "./TaskList";
+import { Task } from "../../../types/Task";
+import TaskForm from "../Components/TaskForm";
+import TaskList from "../Components/TaskList";
 
 const MainContainer: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);

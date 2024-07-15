@@ -1,4 +1,4 @@
-import MainContainer from "./components/MainContainer";
+import MainContainer from "./Pages/MainPage/Containers/MainContainer";
 
 import "./App.css";
 import "./index.css";
