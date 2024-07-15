@@ -6,9 +6,10 @@ import { Task } from "../../../types/Task";
 
 interface TaskListProps {
   tasks: Task[];
+  deleteTask: (id: string) => void
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
   return (
     <div>
       {tasks.map((task) => (
@@ -26,7 +27,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
             </p>
             <p>Due Date: {task.dueDate.toDateString()}</p>
           </Group>
-          <Button color="red">Delete</Button>
+          <Button onClick = { () => deleteTask(task.id)} color="red">Delete</Button>
           <Divider mt={30} size="xs" />
         </Container>
       ))}
