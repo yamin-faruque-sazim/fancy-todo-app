@@ -1,6 +1,8 @@
 import React from "react";
-import { Task } from "../types/Task";
+
 import { Container, Button, Group, Divider } from "@mantine/core";
+
+import { Task } from "../types/Task";
 
 interface TaskListProps {
   tasks: Task[];
@@ -29,6 +31,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
         </Container>
       ))}
     </div>
+
   );
+  
 };
+
 export default TaskList;

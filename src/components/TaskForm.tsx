@@ -56,7 +56,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
             required
-          ></TextInput>
+          />
 
           <TextInput
             mt={10}
@@ -67,7 +67,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
             value={summary}
             onChange={(e) => setSummary(e.currentTarget.value)}
             required
-          ></TextInput>
+          />
         </Group>
         <Group>
           <Select
