@@ -9,9 +9,10 @@ import "./styles.css";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
+  deleteCompletedTask: () => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ addTask, deleteCompletedTask }) => {
   const [title, setTitle] = useState<string>("");
   const [summary, setSummary] = useState<string>("");
   const [priority, setPriority] = useState<number>(2);
@@ -95,7 +96,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
         <Group mt={15}>
           <Button type="submit">Add Task</Button>
           <Button>Filter tasks</Button>
-          <Button>Clear Completed</Button>
+          <Button onClick = {deleteCompletedTask}>Clear Completed</Button>
         </Group>
       </form>
     </Container>
