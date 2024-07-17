@@ -6,30 +6,28 @@ import TaskList from "../Components/TaskList";
 
 const MainContainer: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  // const [isCompletedList,setIsCompletedList] = useState<string>("");
 
   const addTask = (task: Task) => {
-    setTasks([task,...tasks ]);
+    setTasks([task, ...tasks]);
   };
 
-  const deleteTask = (id : string) => {
-    setTasks (prevTasks => prevTasks.filter (task => task.id !== id))
-  }
+  const deleteTask = (id: string) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  };
 
   const toggleCompletedTask = (id: string) => {
-    // setIsCompletedList([...isCompletedList,id])
-
-    setTasks ((prevTasks) => {
-      return prevTasks.map(task => 
-        task.id == id? {...task, completed: !task.completed} : task
-      )
-    })
+    setTasks((prevTasks) => {
+      return prevTasks.map((task) =>
+        task.id == id ? { ...task, completed: !task.completed } : task
+      );
+    });
   };
 
   const deleteCompletedTask = () => {
-    setTasks (prevTasks => prevTasks.filter (task => task.completed !== true))
-    // setTasks (prevTasks => prevTasks.filter (task => !task.completed))
-  }
+    setTasks((prevTasks) =>
+      prevTasks.filter((task) => task.completed !== true)
+    );
+  };
 
   const sortedTasks = tasks.slice().sort((a, b) => {
     if (a.completed && !b.completed) return 1;
@@ -40,8 +38,12 @@ const MainContainer: React.FC = () => {
   return (
     <>
       <h1 className="App">To Do Application</h1>
-      <TaskForm addTask={addTask} deleteCompletedTask = {deleteCompletedTask} />
-      <TaskList sortedTasks={sortedTasks} deleteTask = {deleteTask} toggleCompletedTask = {toggleCompletedTask}/>
+      <TaskForm addTask={addTask} deleteCompletedTask={deleteCompletedTask} />
+      <TaskList
+        sortedTasks={sortedTasks}
+        deleteTask={deleteTask}
+        toggleCompletedTask={toggleCompletedTask}
+      />
     </>
   );
 };
