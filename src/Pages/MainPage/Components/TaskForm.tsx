@@ -4,7 +4,7 @@ import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 
-import { Task } from "../types/Task";
+import { Task } from "../../../types/Task";
 import "./styles.css";
 
 interface TaskFormProps {
