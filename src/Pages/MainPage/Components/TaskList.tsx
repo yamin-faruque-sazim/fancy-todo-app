@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 
-import { Container, Button, Group, Divider, Modal } from "@mantine/core";
+import { Container, Button, Group, Divider, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import { Task } from "../../../types/Task";
 
 interface TaskListProps {
-  tasks: Task[];
+  sortedTasks: Task[];
   deleteTask: (id: string) => void;
+  toggleCompletedTask: (id: string) => void;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
+const TaskList: React.FC<TaskListProps> = ({
+  sortedTasks,
+  deleteTask,
+  toggleCompletedTask,
+}) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
 
@@ -27,6 +32,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
     }
   };
 
+  const isCompleteHandler = (id: string) => {
+    toggleCompletedTask(id);
+  };
+
   return (
     <div>
       <Modal opened={opened} onClose={close} title="Are you sure?" centered>
@@ -37,10 +46,16 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
           <Button onClick={close}>No</Button>
         </Group>
       </Modal>
-      {tasks.map((task) => (
-        <Container key={task.id} p="md" mb="md">
-          <h3>Title: {task.title}</h3>
-          <p>Description: {task.summary}</p>
+
+      {sortedTasks.map((task) => (
+        <Container
+          td={task.completed ? "line-through" : "none"}
+          key={task.id}
+          p="md"
+          mb="md"
+        >
+          <Text>Title: {task.title}</Text>
+          <Text mt={15}>Description: {task.summary}</Text>
           <Group>
             <p>
               Priority:{" "}
@@ -52,16 +67,26 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, deleteTask }) => {
             </p>
             <p>Due Date: {task.dueDate.toDateString()}</p>
           </Group>
-          <Button onClick={() => openModalHandler(task.id)} color="red">
+          <Button
+            style={{ display: task.completed ? "none" : "inline-block" }}
+            onClick={() => openModalHandler(task.id)}
+            color="red"
+          >
             Delete
+          </Button>
+          <Button
+            style={{ display: task.completed ? "none" : "inline-block" }}
+            onClick={() => isCompleteHandler(task.id)}
+            ml={10}
+            color="green"
+          >
+            Complete
           </Button>
           <Divider mt={30} size="xs" />
         </Container>
       ))}
     </div>
-
   );
-  
 };
 
 export default TaskList;
