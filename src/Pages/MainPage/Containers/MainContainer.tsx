@@ -35,7 +35,7 @@ const MainContainer: React.FC = () => {
     );
   };
 
-  const deleteCompletedTask = () => {
+  const deleteCompletedTasks = () => {
     setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
   };
 
@@ -48,7 +48,7 @@ const MainContainer: React.FC = () => {
   return (
     <>
       <h1 className="App">To Do Application</h1>
-      <TaskForm addTask={addTask} deleteCompletedTask={deleteCompletedTask} />
+      <TaskForm addTask={addTask} deleteCompletedTasks={deleteCompletedTasks} />
       <TaskList
         sortedTasks={sortedTasks}
         deleteTask={deleteTask}
