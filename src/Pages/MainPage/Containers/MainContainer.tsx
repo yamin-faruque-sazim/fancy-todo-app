@@ -1,14 +1,26 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { Task } from "../../../types/Task";
 import TaskForm from "../Components/TaskForm";
 import TaskList from "../Components/TaskList";
 
 const MainContainer: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem("my-tasks");
+    if (savedTasks) {
+      return JSON.parse(savedTasks).map((task: Task) => ({
+        ...task,
+        dueDate: new Date(task.dueDate),
+      }));
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("my-tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (task: Task) => {
-    setTasks([task, ...tasks]);
+    setTasks((prevTasks) => [task, ...prevTasks]);
   };
 
   const deleteTask = (id: string) => {
@@ -16,17 +28,15 @@ const MainContainer: React.FC = () => {
   };
 
   const toggleCompletedTask = (id: string) => {
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) =>
-        task.id == id ? { ...task, completed: !task.completed } : task
-      );
-    });
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
   };
 
-  const deleteCompletedTask = () => {
-    setTasks((prevTasks) =>
-      prevTasks.filter((task) => task.completed !== true)
-    );
+  const deleteCompletedTasks = () => {
+    setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
   };
 
   const sortedTasks = tasks.slice().sort((a, b) => {
@@ -38,7 +48,7 @@ const MainContainer: React.FC = () => {
   return (
     <>
       <h1 className="App">To Do Application</h1>
-      <TaskForm addTask={addTask} deleteCompletedTask={deleteCompletedTask} />
+      <TaskForm addTask={addTask} deleteCompletedTasks={deleteCompletedTasks} />
       <TaskList
         sortedTasks={sortedTasks}
         deleteTask={deleteTask}
@@ -47,4 +57,5 @@ const MainContainer: React.FC = () => {
     </>
   );
 };
+
 export default MainContainer;
