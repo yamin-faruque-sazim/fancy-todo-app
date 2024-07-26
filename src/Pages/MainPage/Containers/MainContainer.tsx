@@ -19,6 +19,8 @@ const MainContainer: React.FC = () => {
     localStorage.setItem("my-tasks", JSON.stringify(tasks));
   }, [tasks]);
 
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+
   const addTask = (task: Task) => {
     setTasks((prevTasks) => [task, ...prevTasks]);
   };
@@ -39,6 +41,17 @@ const MainContainer: React.FC = () => {
     setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
   };
 
+  const startEditingTask = (id: string) => {
+    setEditingTaskId(id);
+  };
+
+  const saveTask = (updatedTask: Task) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+    setEditingTaskId(null);
+  };
+
   const sortedTasks = tasks.slice().sort((a, b) => {
     if (a.completed && !b.completed) return 1;
     if (!a.completed && b.completed) return -1;
@@ -53,6 +66,9 @@ const MainContainer: React.FC = () => {
         sortedTasks={sortedTasks}
         deleteTask={deleteTask}
         toggleCompletedTask={toggleCompletedTask}
+        startEditingTask={startEditingTask}
+        editingTaskId={editingTaskId}
+        saveTask={saveTask}
       />
     </>
   );
