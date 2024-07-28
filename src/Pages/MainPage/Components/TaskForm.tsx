@@ -110,11 +110,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
             placeholder="Filter Tasks"
             data={[
               { value: "all", label: "All" },
-              { value: "priority-high-low", label: "Priority (High-Low)" },
-              { value: "priority-low-high", label: "Priority (Low-High)" },
-              { value: "due-date-asc", label: "Due Date (Earliest First)" },
-              { value: "completed", label: "Completed" },
-              { value: "active", label: "Active" },
+    { value: "priority-high-low", label: "Priority (High-Low)" },
+    { value: "priority-low-high", label: "Priority (Low-High)" },
+    { value: "due-date-asc", label: "Due Date (Earliest First)" },
+    { value: "completed", label: "Completed" },
+    { value: "active", label: "Active" },
+    { value: "high", label: "High Priority" },
+    { value: "medium", label: "Medium Priority" },
+    { value: "low", label: "Low Priority" },
             ]}
             value={filter}
             onChange={(value) => setFilter(value || "")}

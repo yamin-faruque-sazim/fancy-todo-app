@@ -15,7 +15,7 @@ const MainContainer: React.FC = () => {
     return [];
   });
 
-  const [filter, setFilter] = useState<string>('all');
+  const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
     localStorage.setItem("my-tasks", JSON.stringify(tasks));
@@ -56,43 +56,56 @@ const MainContainer: React.FC = () => {
 
   const applyFilter = (tasks: Task[], filter: string): Task[] => {
     switch (filter) {
-      case 'all':
+      case "all":
         return tasks.sort((a, b) => {
           if (a.completed && !b.completed) return 1;
           if (!a.completed && b.completed) return -1;
           return 0;
         });
-      case 'priority-high-low':
+      case "priority-high-low":
         return tasks
           .filter((task) => !task.completed)
           .sort((a, b) => a.priority - b.priority);
-      case 'priority-low-high':
+      case "priority-low-high":
         return tasks
           .filter((task) => !task.completed)
           .sort((a, b) => b.priority - a.priority);
-      case 'due-date-asc':
+      case "due-date-asc":
         return tasks
           .filter((task) => !task.completed)
           .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-      case 'completed':
+      case "completed":
         return tasks.filter((task) => task.completed);
-      case 'active':
+      case "active":
         return tasks.filter((task) => !task.completed);
+      case "high":
+        return tasks
+        .filter ((task) => !task.completed)
+        .filter((task) => task.priority === 1);
+      case "medium":
+        return tasks
+        .filter ((task) => !task.completed)
+        .filter((task) => task.priority === 2);
+      case "low":
+        return tasks
+        .filter ((task) => !task.completed)
+        .filter((task) => task.priority === 3);
+
       default:
         return tasks;
     }
   };
-  
+
   const filteredTasks = applyFilter(tasks, filter);
 
   return (
     <>
       <h1 className="App">To Do Application</h1>
-      <TaskForm 
-      addTask={addTask} 
-      deleteCompletedTasks={deleteCompletedTasks}
-      setFilter={setFilter}
-      filter={filter}
+      <TaskForm
+        addTask={addTask}
+        deleteCompletedTasks={deleteCompletedTasks}
+        setFilter={setFilter}
+        filter={filter}
       />
       <TaskList
         sortedTasks={filteredTasks}
