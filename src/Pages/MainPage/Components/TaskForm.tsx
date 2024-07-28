@@ -10,11 +10,15 @@ import "./styles.css";
 interface TaskFormProps {
   addTask: (task: Task) => void;
   deleteCompletedTasks: () => void;
+  setFilter: (filter: string) => void;
+  filter: string;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({
   addTask,
   deleteCompletedTasks,
+  setFilter,
+  filter,
 }) => {
   const [title, setTitle] = useState<string>("");
   const [summary, setSummary] = useState<string>("");
@@ -48,7 +52,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
       bg="var(--mantine-color-dark-5)"
       h="auto"
       mt={50}
-      pb={15}
+      mb={15}
+      pl={15}
     >
       <form onSubmit={handleSubmit}>
         <Group>
@@ -96,10 +101,24 @@ const TaskForm: React.FC<TaskFormProps> = ({
             onChange={setDueDate}
           />
         </Group>
-        <Group mt={15}>
+        <Group mt={10} >
           <Button type="submit">Add Task</Button>
-          <Button>Filter tasks</Button>
           <Button onClick={deleteCompletedTasks}>Clear Completed</Button>
+          <Select
+            mb={20}
+            label="Filter"
+            placeholder="Filter Tasks"
+            data={[
+              { value: "all", label: "All" },
+              { value: "priority-high-low", label: "Priority (High-Low)" },
+              { value: "priority-low-high", label: "Priority (Low-High)" },
+              { value: "due-date-asc", label: "Due Date (Earliest First)" },
+              { value: "completed", label: "Completed" },
+              { value: "active", label: "Active" },
+            ]}
+            value={filter}
+            onChange={(value) => setFilter(value || "")}
+          />
         </Group>
       </form>
     </Container>
