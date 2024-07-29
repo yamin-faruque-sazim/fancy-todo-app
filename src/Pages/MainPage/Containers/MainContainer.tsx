@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+
+import { Button,Container } from "@mantine/core";
+
 import { Task } from "../../../types/Task";
 import TaskForm from "../Components/TaskForm";
 import TaskList from "../Components/TaskList";
@@ -16,22 +19,25 @@ const MainContainer: React.FC = () => {
   });
 
   const [filter, setFilter] = useState<string>("all");
+  const [history, setHistory] = useState<Task[][]>([]);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem("my-tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-
   const addTask = (task: Task) => {
+    setHistory((prevHistory) => [...prevHistory, tasks]);
     setTasks((prevTasks) => [task, ...prevTasks]);
   };
 
   const deleteTask = (id: string) => {
+    setHistory((prevHistory) => [...prevHistory, tasks]);
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   };
 
   const toggleCompletedTask = (id: string) => {
+    setHistory((prevHistory) => [...prevHistory, tasks]);
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
@@ -40,6 +46,7 @@ const MainContainer: React.FC = () => {
   };
 
   const deleteCompletedTasks = () => {
+    setHistory((prevHistory) => [...prevHistory, tasks]);
     setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
   };
 
@@ -48,10 +55,22 @@ const MainContainer: React.FC = () => {
   };
 
   const saveTask = (updatedTask: Task) => {
+    setHistory((prevHistory) => [...prevHistory, tasks]);
     setTasks((prevTasks) =>
       prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
     setEditingTaskId(null);
+  };
+
+  const undo = () => {
+    setHistory((prevHistory) => {
+      if (prevHistory.length > 0) {
+        const lastState = prevHistory[prevHistory.length - 1];
+        setTasks(lastState);
+        return prevHistory.slice(0, prevHistory.length - 1);
+      }
+      return prevHistory;
+    });
   };
 
   const applyFilter = (tasks: Task[], filter: string): Task[] => {
@@ -80,16 +99,16 @@ const MainContainer: React.FC = () => {
         return tasks.filter((task) => !task.completed);
       case "high":
         return tasks
-        .filter ((task) => !task.completed)
-        .filter((task) => task.priority === 1);
+          .filter((task) => !task.completed)
+          .filter((task) => task.priority === 1);
       case "medium":
         return tasks
-        .filter ((task) => !task.completed)
-        .filter((task) => task.priority === 2);
+          .filter((task) => !task.completed)
+          .filter((task) => task.priority === 2);
       case "low":
         return tasks
-        .filter ((task) => !task.completed)
-        .filter((task) => task.priority === 3);
+          .filter((task) => !task.completed)
+          .filter((task) => task.priority === 3);
 
       default:
         return tasks;
@@ -99,7 +118,7 @@ const MainContainer: React.FC = () => {
   const filteredTasks = applyFilter(tasks, filter);
 
   return (
-    <>
+    <Container>
       <h1 className="App">To Do Application</h1>
       <TaskForm
         addTask={addTask}
@@ -107,6 +126,14 @@ const MainContainer: React.FC = () => {
         setFilter={setFilter}
         filter={filter}
       />
+      <Button 
+      disabled = {history.length===0}
+      onClick={undo}
+      mb={10}
+      color= {`var(--mantine-color-violet-5)`}
+      >
+        Undo
+      </Button>
       <TaskList
         sortedTasks={filteredTasks}
         deleteTask={deleteTask}
@@ -115,7 +142,7 @@ const MainContainer: React.FC = () => {
         editingTaskId={editingTaskId}
         saveTask={saveTask}
       />
-    </>
+    </Container>
   );
 };
 
