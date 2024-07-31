@@ -104,8 +104,9 @@ const TaskList: React.FC<TaskListProps> = ({
         <Container
           td={task.completed ? "line-through" : "none"}
           key={task.id}
-          p="md"
+          pt={10}
           mb="md"
+          pl={-10}
         >
           {editingTaskId === task.id ? (
             <div>
