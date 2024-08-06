@@ -4,8 +4,8 @@ import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 
-import { Task } from "../../../types/Task";
-import "./styles.css";
+import { Task } from "../../types/Task";
+import styles from "./styles.module.css";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
@@ -48,7 +48,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   return (
     <Container
-      className="formContainer"
+      className={styles.formContainer}
       bg="var(--mantine-color-dark-5)"
       h="auto"
       mt={50}
@@ -59,7 +59,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Group>
           <TextInput
             size="md"
-            className="titleInput"
+            className={styles.titleInput}
             label="Title"
             placeholder="Give a title for your task"
             value={title}
@@ -70,7 +70,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <TextInput
             mt={10}
             size="md"
-            className="summaryInput"
+            className={styles.summaryInput}
             label="Description"
             placeholder="Enter a brief desription for your task"
             value={summary}
@@ -81,7 +81,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Group>
           <Select
             mt={10}
-            className="selectInput"
+            className={styles.selectInput}
             label="Priority"
             value={String(priority)}
             onChange={(value) => setPriority(Number(value))}
@@ -94,14 +94,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
           />
           <DateInput
             mt={10}
-            className="selectDate"
+            className={styles.selectDate}
             label="Due Date"
             placeholder="Pick a date"
             value={dueDate}
             onChange={setDueDate}
           />
         </Group>
-        <Group mt={10} >
+        <Group mt={10}>
           <Button type="submit">Add Task</Button>
           <Button onClick={deleteCompletedTasks}>Clear Completed</Button>
           <Select
@@ -110,14 +110,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
             placeholder="Filter Tasks"
             data={[
               { value: "all", label: "All" },
-    { value: "priority-high-low", label: "Priority (High-Low)" },
-    { value: "priority-low-high", label: "Priority (Low-High)" },
-    { value: "due-date-asc", label: "Due Date (Earliest First)" },
-    { value: "completed", label: "Completed" },
-    { value: "active", label: "Active" },
-    { value: "high", label: "High Priority" },
-    { value: "medium", label: "Medium Priority" },
-    { value: "low", label: "Low Priority" },
+              { value: "priority-high-low", label: "Priority (High-Low)" },
+              { value: "priority-low-high", label: "Priority (Low-High)" },
+              { value: "due-date-asc", label: "Due Date (Earliest First)" },
+              { value: "completed", label: "Completed" },
+              { value: "active", label: "Active" },
+              { value: "high", label: "High Priority" },
+              { value: "medium", label: "Medium Priority" },
+              { value: "low", label: "Low Priority" },
             ]}
             value={filter}
             onChange={(value) => setFilter(value || "")}

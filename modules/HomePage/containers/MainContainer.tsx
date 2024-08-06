@@ -2,29 +2,34 @@ import { useState, useEffect } from "react";
 
 import { Button, Container } from "@mantine/core";
 
-import { Task } from "../../../types/Task";
-import TaskForm from "../Components/TaskForm";
-import TaskList from "../Components/TaskList";
+import { Task } from "../types/Task";
+import TaskForm from "../components/TaskForm/TaskForm";
+import TaskList from "../components/TaskList/TaskList";
 
 const MainContainer: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedTasks = localStorage.getItem("my-tasks");
-    if (savedTasks) {
-      return JSON.parse(savedTasks).map((task: Task) => ({
-        ...task,
-        dueDate: new Date(task.dueDate),
-      }));
-    }
-    return [];
-  });
-
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<string>("all");
   const [history, setHistory] = useState<Task[][]>([]);
   const [redoArray, setRedoArray] = useState<Task[][]>([]);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem("my-tasks", JSON.stringify(tasks));
+    const savedTasks = window.localStorage.getItem("my-tasks");
+    if (savedTasks) {
+      const parsedTasks = JSON.parse(savedTasks);
+      setTasks(
+        parsedTasks.map((task: Task) => ({
+          ...task,
+          dueDate: new Date(task.dueDate),
+        }))
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && tasks.length > 0) {
+      window.localStorage.setItem("my-tasks", JSON.stringify(tasks));
+    }
   }, [tasks]);
 
   const addTask = (task: Task) => {
