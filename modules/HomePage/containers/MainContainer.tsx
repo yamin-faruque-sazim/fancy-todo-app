@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+
 import { Button, Container } from "@mantine/core";
+
 import { Task } from "../types/Task";
 import TaskForm from "../components/TaskForm/TaskForm";
 import TaskList from "../components/TaskList/TaskList";
@@ -24,15 +26,9 @@ const MainContainer: React.FC = () => {
     }
   }, []);
 
-  // Load tasks from localStorage on the client side only
- // Empty dependency array, runs only once on component mount
-
-  // Save tasks to localStorage whenever tasks state changes
   useEffect(() => {
     if (typeof window !== "undefined" && tasks.length > 0) {
-      
-        window.localStorage.setItem("my-tasks", JSON.stringify(tasks));
-
+      window.localStorage.setItem("my-tasks", JSON.stringify(tasks));
     }
   }, [tasks]);
 
