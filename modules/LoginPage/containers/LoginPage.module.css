@@ -1,0 +1,25 @@
+
+.loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #121212; 
+  }
+  
+  .cardContainer {
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); 
+    background-color: #1e1e1e; 
+    width: 100%;
+    max-width: 400px; 
+  }
+
+  .inputLabel {
+    color: #bbbbbb; 
+    margin-bottom: 0.5rem;
+  }
+  
+
+  
