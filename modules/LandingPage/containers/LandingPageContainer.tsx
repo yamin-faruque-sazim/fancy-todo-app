@@ -4,8 +4,7 @@ import router from "next/router";
 import { Container, Stack, Text, Group, Button } from "@mantine/core";
 import { IconEdit, IconSearch, IconDeviceFloppy } from "@tabler/icons-react";
 
-import classes from "./container.module.css";
-
+import classes from "./LandingPageContainer.module.css";
 
 const LandingPageContainer: React.FC = () => {
   return (
