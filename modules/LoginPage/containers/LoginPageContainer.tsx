@@ -1,4 +1,5 @@
 import { NextRouter, useRouter } from "next/router";
+import { useState } from "react";
 
 import {
   Button,
@@ -7,7 +8,9 @@ import {
   Stack,
   Card,
   Title,
+  Alert,
 } from "@mantine/core";
+import { IconAlertCircle } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 
@@ -16,53 +19,54 @@ import classes from "./LoginPage.module.css";
 const predefinedEmail = "test@gmail.com";
 const predefinedPassword = "123456";
 
-const validateLogin = (email: string, password: string, router: NextRouter) => {
-  if (email === predefinedEmail && password === predefinedPassword) {
-    router.push("/todo");
-  } 
-};
-
 const LoginPageContainer: React.FC = () => {
   const [visible, { toggle }] = useDisclosure(false);
   const router = useRouter();
+  const [isInvalid, setIsInvalid] = useState(false);
+
+  const validateLogin = (
+    email: string,
+    password: string,
+    router: NextRouter
+  ) => {
+    if (email === predefinedEmail && password === predefinedPassword) {
+      router.push("/todo");
+    } else {
+      setIsInvalid(true);
+    }
+  };
 
   const form = useForm({
-    mode: "uncontrolled",
     initialValues: {
       email: "",
       password: "",
-    },
-    validate: {
-      email: (value) => {
-        if (!value) {
-          return "Email is required";
-        }
-        if (value !== predefinedEmail) {
-          return "Invalid Email";
-        }
-      },
-      password: (value) => {
-        if (!value) {
-          return "Password is required";
-        }
-        if (value !== predefinedPassword) {
-          return "Invalid password";
-        }
-        return null;
-      },
     },
   });
 
   return (
     <div className={classes.loginPage}>
       <Card className={classes.cardContainer}>
-        <Title  order={2} mb="lg">
+        <Title order={2} mb="lg">
           Login
         </Title>
+
+        {isInvalid && (
+          <Alert
+            icon={<IconAlertCircle />}
+            title="Invalid Credentials"
+            color="red"
+            mt="md"
+            mb="lg"
+          >
+            The email or password you entered is incorrect.
+          </Alert>
+        )}
+
         <form
           onSubmit={form.onSubmit((values) => {
             validateLogin(values.email, values.password, router);
           })}
+          onChange={() => setIsInvalid(false)}
         >
           <Stack>
             <TextInput
@@ -85,8 +89,14 @@ const LoginPageContainer: React.FC = () => {
                 label: classes.inputLabel,
               }}
             />
-            <Button color="teal" mt={20} mb={10} className={classes.submitButton} type="submit">
-           Login
+            <Button
+              color="teal"
+              mt={20}
+              mb={10}
+              className={classes.submitButton}
+              type="submit"
+            >
+              Login
             </Button>
           </Stack>
         </form>
