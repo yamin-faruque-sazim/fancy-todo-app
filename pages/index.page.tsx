@@ -1,6 +1,10 @@
-import MainContainer from "../modules/HomePage/containers/MainContainer";
+import React from "react";
+
+import LandingPageContainer from "@/modules/LandingPage/containers/LandingPageContainer";
 
 
-export default function Home() {
-  return <MainContainer/>
-}
+const HomePage: React.FC = () => {
+  return <LandingPageContainer />;
+};
+
+export default HomePage;
