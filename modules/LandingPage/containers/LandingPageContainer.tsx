@@ -37,7 +37,7 @@ const LandingPageContainer: React.FC = () => {
 
       <div className={classes.rightSection}>
         <Button
-          onClick={() => router.push("/todo")}
+          onClick={() => router.push("/login")}
           className={classes.getStartedButton}
           size="lg"
           variant="filled"
