@@ -68,7 +68,7 @@ const useTaskOperations = () => {
     setHistory((prevHistory) => {
       if (prevHistory.length > 0) {
         const lastState = prevHistory[prevHistory.length - 1];
-        setRedoArray((prevRedoState) => [...prevRedoState, tasks]);
+        setRedoArray((prevRedoArray) => [...prevRedoArray, tasks]);
         setTasks(lastState);
         return prevHistory.slice(0, prevHistory.length - 1);
       }
@@ -77,14 +77,50 @@ const useTaskOperations = () => {
   };
 
   const redo = () => {
-    setRedoArray((prevRedoState) => {
-      if (prevRedoState.length > 0) {
-        const nextState = prevRedoState[prevRedoState.length - 1];
+    setRedoArray((prevRedoArray) => {
+      if (prevRedoArray.length > 0) {
+        const nextState = prevRedoArray[prevRedoArray.length - 1];
         setHistory((prevHistory) => [...prevHistory, tasks]);
         setTasks(nextState);
-        return prevRedoState.slice(0, prevRedoState.length - 1);
+        return prevRedoArray.slice(0, prevRedoArray.length - 1);
       }
-      return prevRedoState;
+      return prevRedoArray;
+    });
+  };
+
+  const filterByStatus = (tasks: Task[], filter: string): Task[] => {
+    switch (filter) {
+      case "completed":
+        return tasks.filter((task) => task.completed === true);
+      case "active":
+        return tasks.filter((task) => task.completed === false);
+      default:
+        return tasks;
+    }
+  };
+
+  const filterByPriority = (tasks: Task[], filter: string): Task[] => {
+    const activeTasks = tasks.filter((task) => !task.completed);
+    switch (filter) {
+      case "priority-high-low":
+        return activeTasks.sort((a, b) => a.priority - b.priority);
+      case "priority-low-high":
+        return activeTasks.sort((a, b) => b.priority - a.priority);
+      case "high":
+        return activeTasks.filter((task) => task.priority === 1);
+      case "medium":
+        return activeTasks.filter((task) => task.priority === 2);
+      case "low":
+        return activeTasks.filter((task) => task.priority === 3);
+      default:
+        return tasks;
+    }
+  };
+
+  const filterByDueDate = (tasks: Task[]): Task[] => {
+    const activeTasks = tasks.filter((task) => !task.completed);
+    return activeTasks.sort((a, b) => {
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     });
   };
 
@@ -96,34 +132,21 @@ const useTaskOperations = () => {
           if (!a.completed && b.completed) return -1;
           return 0;
         });
+
       case "priority-high-low":
-        return tasks
-          .filter((task) => !task.completed)
-          .sort((a, b) => a.priority - b.priority);
       case "priority-low-high":
-        return tasks
-          .filter((task) => !task.completed)
-          .sort((a, b) => b.priority - a.priority);
-      case "due-date-asc":
-        return tasks
-          .filter((task) => !task.completed)
-          .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-      case "completed":
-        return tasks.filter((task) => task.completed);
-      case "active":
-        return tasks.filter((task) => !task.completed);
       case "high":
-        return tasks
-          .filter((task) => !task.completed)
-          .filter((task) => task.priority === 1);
       case "medium":
-        return tasks
-          .filter((task) => !task.completed)
-          .filter((task) => task.priority === 2);
       case "low":
-        return tasks
-          .filter((task) => !task.completed)
-          .filter((task) => task.priority === 3);
+        return filterByPriority(tasks, filter);
+
+      case "completed":
+      case "active":
+        return filterByStatus(tasks, filter);
+
+      case "due-date-asc":
+        return filterByDueDate(tasks);
+
       default:
         return tasks;
     }

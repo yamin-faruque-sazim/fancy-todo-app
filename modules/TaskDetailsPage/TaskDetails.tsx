@@ -13,7 +13,8 @@ import {
 
 import classes from "./TaskDetails.module.css";
 import { Task } from "../HomePage/types/Task";
-import useTaskOperations from "../../shared/utils/usetaskOperations";
+import useTaskOperations from "@/shared/utils/useTaskOperations";
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 
 const TaskDetails = () => {
   const router = useRouter();
@@ -118,11 +119,7 @@ const TaskDetails = () => {
                 }));
               }
             }}
-            data={[
-              { value: "1", label: "High" },
-              { value: "2", label: "Medium" },
-              { value: "3", label: "Low" },
-            ]}
+            data={PRIORITY_OPTIONS}
             label="Priority"
             mt="md"
           />

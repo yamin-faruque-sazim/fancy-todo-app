@@ -15,6 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 import { Task } from "../../types/Task";
 import classes from "./TaskList.module.css";
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 
 interface TaskListProps {
   sortedTasks: Task[];
@@ -110,11 +111,7 @@ const TaskList: React.FC<TaskListProps> = ({
           mb="md"
           className={classes.taskContainer}
         >
-          <Link
-            style={{ textDecoration: "none", color: "inherit" }}
-            href={`/task/${task.id}`}
-            passHref
-          >
+          <Link className={classes.taskLink} href={`/task/${task.id}`} passHref>
             <div>
               <Text
                 td={task.completed ? "line-through" : "none"}
@@ -175,11 +172,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     }));
                   }
                 }}
-                data={[
-                  { value: "1", label: "High" },
-                  { value: "2", label: "Medium" },
-                  { value: "3", label: "Low" },
-                ]}
+                data={PRIORITY_OPTIONS}
               />
               <Button onClick={() => handleEditSubmit(task)}>Save</Button>
             </div>

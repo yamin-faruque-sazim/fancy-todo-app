@@ -156,7 +156,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               { value: "low", label: "Low Priority" },
             ]}
             value={filter}
-            onChange={(value) => setFilter(value || "")}
+            onChange={(value) => setFilter(value || "all")}
           />
         </Group>
       </form>
