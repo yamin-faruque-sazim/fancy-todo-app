@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 import {
   Container,
@@ -13,6 +14,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 
 import { Task } from "../../types/Task";
+import classes from "./TaskList.module.css";
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 
 interface TaskListProps {
   sortedTasks: Task[];
@@ -33,7 +36,6 @@ const TaskList: React.FC<TaskListProps> = ({
 }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
-
   const [editFormState, setEditFormState] = useState<{
     title: string;
     description: string;
@@ -104,12 +106,41 @@ const TaskList: React.FC<TaskListProps> = ({
 
       {sortedTasks.map((task) => (
         <Container
-          td={task.completed ? "line-through" : "none"}
           key={task.id}
           pt={10}
           mb="md"
-          pl={-10}
+          className={classes.taskContainer}
         >
+          <Link className={classes.taskLink} href={`/task/${task.id}`} passHref>
+            <div>
+              <Text
+                td={task.completed ? "line-through" : "none"}
+                className={classes.taskTitle}
+              >
+                Title: {task.title}
+              </Text>
+              <Text
+                td={task.completed ? "line-through" : "none"}
+                className={classes.taskDescription}
+                mt={15}
+              >
+                Description: {task.summary}
+              </Text>
+              <Group td={task.completed ? "line-through" : "none"}>
+                <Text className={classes.taskPriority}>
+                  Priority:{" "}
+                  {task.priority === 1
+                    ? "High"
+                    : task.priority === 2
+                    ? "Medium"
+                    : "Low"}
+                </Text>
+                <Text className={classes.taskDueDate}>
+                  Due Date: {task.dueDate.toDateString()}
+                </Text>
+              </Group>
+            </div>
+          </Link>
           {editingTaskId === task.id ? (
             <div>
               <TextInput
@@ -141,54 +172,36 @@ const TaskList: React.FC<TaskListProps> = ({
                     }));
                   }
                 }}
-                data={[
-                  { value: "1", label: "High" },
-                  { value: "2", label: "Medium" },
-                  { value: "3", label: "Low" },
-                ]}
+                data={PRIORITY_OPTIONS}
               />
               <Button onClick={() => handleEditSubmit(task)}>Save</Button>
             </div>
           ) : (
-            <div>
-              <Text>Title: {task.title}</Text>
-              <Text mt={15}>Description: {task.summary}</Text>
-              <Group>
-                <p>
-                  Priority:{" "}
-                  {task.priority === 1
-                    ? "High"
-                    : task.priority === 2
-                    ? "Medium"
-                    : "Low"}
-                </p>
-                <p>Due Date: {task.dueDate.toDateString()}</p>
-              </Group>
+            <Group className={classes.taskButtons}>
               <Button
+                color="red"
                 style={{ display: task.completed ? "none" : "inline-block" }}
                 onClick={() => openModalHandler(task.id)}
-                color="red"
               >
                 Delete
               </Button>
               <Button
+                color="green"
                 style={{ display: task.completed ? "none" : "inline-block" }}
                 onClick={() => isCompleteHandler(task.id)}
-                ml={10}
-                color="green"
               >
                 Complete
               </Button>
               <Button
+                color="orange"
                 style={{ display: task.completed ? "none" : "inline-block" }}
                 onClick={() => startEditingTask(task.id)}
-                ml={10}
               >
                 Edit
               </Button>
-              <Divider mt={30} size="xs" />
-            </div>
+            </Group>
           )}
+          <Divider my="sm" />
         </Container>
       ))}
     </div>

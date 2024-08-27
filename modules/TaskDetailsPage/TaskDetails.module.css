@@ -1,0 +1,38 @@
+.taskContainer {
+  background-color: #1a1b1e;
+  color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.taskTitle {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.taskDescription {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.taskPriority {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.taskDueDate {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.taskButtons {
+  margin-top: 20px;
+}
+
+.taskContainerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #1a1b1e;
+}

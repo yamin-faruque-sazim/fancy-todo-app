@@ -5,7 +5,7 @@ import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 
 import { Task } from "../../types/Task";
-import styles from "./styles.module.css";
+import classes from "./TaskForm.module.css";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
@@ -47,32 +47,40 @@ const TaskForm: React.FC<TaskFormProps> = ({
   };
 
   return (
-    <Container
-      className={styles.formContainer}
-      bg="var(--mantine-color-dark-5)"
-      h="auto"
-      mt={50}
-      mb={15}
-      pl={15}
-    >
+    <Container className={classes.formContainer}>
       <form onSubmit={handleSubmit}>
         <Group>
           <TextInput
+            styles={{
+              input: {
+                backgroundColor: "#191a1b",
+              },
+              label: {
+                marginBottom: "10px",
+              },
+            }}
             size="md"
-            className={styles.titleInput}
+            className={classes.titleInput}
             label="Title"
             placeholder="Give a title for your task"
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
             required
           />
-
           <TextInput
+            styles={{
+              input: {
+                backgroundColor: "#191a1b",
+              },
+              label: {
+                marginBottom: "10px",
+              },
+            }}
             mt={10}
             size="md"
-            className={styles.summaryInput}
+            className={classes.summaryInput}
             label="Description"
-            placeholder="Enter a brief desription for your task"
+            placeholder="Enter a brief description for your task"
             value={summary}
             onChange={(e) => setSummary(e.currentTarget.value)}
             required
@@ -80,8 +88,16 @@ const TaskForm: React.FC<TaskFormProps> = ({
         </Group>
         <Group>
           <Select
+            styles={{
+              input: {
+                backgroundColor: "#191a1b",
+              },
+              label: {
+                marginBottom: "10px",
+              },
+            }}
             mt={10}
-            className={styles.selectInput}
+            className={classes.selectInput}
             label="Priority"
             value={String(priority)}
             onChange={(value) => setPriority(Number(value))}
@@ -93,8 +109,16 @@ const TaskForm: React.FC<TaskFormProps> = ({
             required
           />
           <DateInput
+            styles={{
+              input: {
+                backgroundColor: "#191a1b",
+              },
+              label: {
+                marginBottom: "10px",
+              },
+            }}
             mt={10}
-            className={styles.selectDate}
+            className={classes.selectDate}
             label="Due Date"
             placeholder="Pick a date"
             value={dueDate}
@@ -102,9 +126,21 @@ const TaskForm: React.FC<TaskFormProps> = ({
           />
         </Group>
         <Group mt={10}>
-          <Button type="submit">Add Task</Button>
-          <Button onClick={deleteCompletedTasks}>Clear Completed</Button>
+          <Button className={classes.formButton} type="submit">
+            Add Task
+          </Button>
+          <Button className={classes.formButton} onClick={deleteCompletedTasks}>
+            Clear Completed
+          </Button>
           <Select
+            styles={{
+              input: {
+                backgroundColor: "#191a1b",
+              },
+              label: {
+                marginBottom: "10px",
+              },
+            }}
             mb={20}
             label="Filter"
             placeholder="Filter Tasks"
@@ -120,7 +156,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               { value: "low", label: "Low Priority" },
             ]}
             value={filter}
-            onChange={(value) => setFilter(value || "")}
+            onChange={(value) => setFilter(value || "all")}
           />
         </Group>
       </form>
