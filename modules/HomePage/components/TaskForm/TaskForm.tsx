@@ -21,27 +21,27 @@ const TaskForm: React.FC<TaskFormProps> = ({
   filter,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [summary, setSummary] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [priority, setPriority] = useState<number>(2);
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !summary || !priority || !dueDate) {
+    if (!title || !description || !priority || !dueDate) {
       alert("Please fill in all fields");
       return;
     }
     const newTask: Task = {
       id: new Date().toISOString(),
       title,
-      summary,
+      description,
       priority,
       dueDate,
       completed: false,
     };
     addTask(newTask);
     setTitle("");
-    setSummary("");
+    setDescription("");
     setPriority(2);
     setDueDate(null);
   };
@@ -81,8 +81,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
             className={classes.summaryInput}
             label="Description"
             placeholder="Enter a brief description for your task"
-            value={summary}
-            onChange={(e) => setSummary(e.currentTarget.value)}
+            value={description}
+            onChange={(e) => setDescription(e.currentTarget.value)}
             required
           />
         </Group>

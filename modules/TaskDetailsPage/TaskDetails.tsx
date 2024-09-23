@@ -13,7 +13,7 @@ import {
 
 import classes from "./TaskDetails.module.css";
 import { Task } from "../HomePage/types/Task";
-import useTaskOperations from "@/shared/utils/useTaskOperations";
+import useTaskOperations from "@/shared/utils/usetaskOperations";
 import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 
 const TaskDetails = () => {
