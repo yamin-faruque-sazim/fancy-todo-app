@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
+import { useGetTodosQuery } from "@/services/todoApi";
 
 import {
   Container,
@@ -14,10 +15,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 import { Task } from "../../types/Task";
 import classes from "./TaskList.module.css";
-import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
-import { useGetTodosQuery } from "@/services/todoApi";
+
+
 
 interface TaskListProps {
   sortedTasks: Task[];
@@ -95,9 +97,11 @@ const TaskList: React.FC<TaskListProps> = ({
     setEditFormState({ title: "", description: "", dueDate: "", priority: 1 });
   };
   const { data: todos, isLoading } = useGetTodosQuery();
+
   if (isLoading) {
     return <Loader size="xl" />;
   }
+  
   return (
     <div>
       <Modal opened={opened} onClose={close} title="Are you sure?" centered>
