@@ -19,8 +19,6 @@ import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 import { Task } from "../../types/Task";
 import classes from "./TaskList.module.css";
 
-
-
 interface TaskListProps {
   sortedTasks: Task[];
   deleteTask: (id: string) => void;
@@ -44,8 +42,8 @@ const TaskList: React.FC<TaskListProps> = ({
     title: string;
     description: string;
     dueDate: string;
-    priority: number;
-  }>({ title: "", description: "", dueDate: "", priority: 1 });
+    priority: "HIGH" | "MEDIUM" | "LOW";
+  }>({ title: "", description: "", dueDate: "", priority: "MEDIUM" });
 
   useEffect(() => {
     if (editingTaskId) {
@@ -94,14 +92,19 @@ const TaskList: React.FC<TaskListProps> = ({
       priority: editFormState.priority,
     };
     saveTask(updatedTask);
-    setEditFormState({ title: "", description: "", dueDate: "", priority: 1 });
+    setEditFormState({
+      title: "",
+      description: "",
+      dueDate: "",
+      priority: "MEDIUM",
+    });
   };
   const { data: todos, isLoading } = useGetTodosQuery();
 
   if (isLoading) {
     return <Loader size="xl" />;
   }
-  
+
   return (
     <div>
       <Modal opened={opened} onClose={close} title="Are you sure?" centered>
@@ -140,7 +143,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   Priority: {task.priority}
                 </Text>
                 <Text className={classes.taskDueDate}>
-                  Due Date: {new Date(task.dueDate).toDateString()}
+                  Due Date: {new Date(task.dueDate ?? "").toDateString()}
                 </Text>
               </Group>
             </div>
@@ -167,12 +170,12 @@ const TaskList: React.FC<TaskListProps> = ({
               />
               <Select
                 name="priority"
-                value={editFormState.priority.toString()}
+                value={editFormState.priority}
                 onChange={(value) => {
                   if (value) {
                     setEditFormState((prev) => ({
                       ...prev,
-                      priority: parseInt(value, 10),
+                      priority: value as "HIGH" | "MEDIUM" | "LOW",
                     }));
                   }
                 }}
@@ -185,21 +188,21 @@ const TaskList: React.FC<TaskListProps> = ({
               <Button
                 color="red"
                 style={{ display: task.completed ? "none" : "inline-block" }}
-                onClick={() => openModalHandler(task.id)}
+                onClick={() => openModalHandler(task.id ?? "")}
               >
                 Delete
               </Button>
               <Button
                 color="green"
                 style={{ display: task.completed ? "none" : "inline-block" }}
-                onClick={() => isCompleteHandler(task.id)}
+                onClick={() => isCompleteHandler(task.id ?? "")}
               >
                 Complete
               </Button>
               <Button
                 color="orange"
                 style={{ display: task.completed ? "none" : "inline-block" }}
-                onClick={() => startEditingTask(task.id)}
+                onClick={() => startEditingTask(task.id ?? "")}
               >
                 Edit
               </Button>
