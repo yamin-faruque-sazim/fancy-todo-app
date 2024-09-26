@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { Loader } from "@mantine/core";
+import { useGetTodosQuery } from "@/services/todoApi";
 
 import {
   Container,
@@ -13,9 +15,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 import { Task } from "../../types/Task";
 import classes from "./TaskList.module.css";
-import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
+
+
 
 interface TaskListProps {
   sortedTasks: Task[];
@@ -49,7 +53,7 @@ const TaskList: React.FC<TaskListProps> = ({
       if (taskToEdit) {
         setEditFormState({
           title: taskToEdit.title,
-          description: taskToEdit.summary,
+          description: taskToEdit.description,
           dueDate: taskToEdit.dueDate.toISOString().split("T")[0],
           priority: taskToEdit.priority,
         });
@@ -85,14 +89,19 @@ const TaskList: React.FC<TaskListProps> = ({
     const updatedTask: Task = {
       ...task,
       title: editFormState.title,
-      summary: editFormState.description,
+      description: editFormState.description,
       dueDate: new Date(editFormState.dueDate),
       priority: editFormState.priority,
     };
     saveTask(updatedTask);
     setEditFormState({ title: "", description: "", dueDate: "", priority: 1 });
   };
+  const { data: todos, isLoading } = useGetTodosQuery();
 
+  if (isLoading) {
+    return <Loader size="xl" />;
+  }
+  
   return (
     <div>
       <Modal opened={opened} onClose={close} title="Are you sure?" centered>
@@ -104,7 +113,7 @@ const TaskList: React.FC<TaskListProps> = ({
         </Group>
       </Modal>
 
-      {sortedTasks.map((task) => (
+      {todos?.map((task) => (
         <Container
           key={task.id}
           pt={10}
@@ -124,19 +133,14 @@ const TaskList: React.FC<TaskListProps> = ({
                 className={classes.taskDescription}
                 mt={15}
               >
-                Description: {task.summary}
+                Description: {task.description}
               </Text>
               <Group td={task.completed ? "line-through" : "none"}>
                 <Text className={classes.taskPriority}>
-                  Priority:{" "}
-                  {task.priority === 1
-                    ? "High"
-                    : task.priority === 2
-                    ? "Medium"
-                    : "Low"}
+                  Priority: {task.priority}
                 </Text>
                 <Text className={classes.taskDueDate}>
-                  Due Date: {task.dueDate.toDateString()}
+                  Due Date: {new Date(task.dueDate).toDateString()}
                 </Text>
               </Group>
             </div>

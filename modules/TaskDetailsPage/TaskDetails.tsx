@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
 import {
   Container,
   Text,
@@ -11,10 +10,12 @@ import {
   Select,
 } from "@mantine/core";
 
+import useTaskOperations from "@/shared/utils/usetaskOperations";
+import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
+
 import classes from "./TaskDetails.module.css";
 import { Task } from "../HomePage/types/Task";
-import useTaskOperations from "@/shared/utils/useTaskOperations";
-import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
+
 
 const TaskDetails = () => {
   const router = useRouter();
@@ -38,7 +39,7 @@ const TaskDetails = () => {
     if (task) {
       setEditFormState({
         title: task.title,
-        description: task.summary,
+        description: task.description,
         dueDate: task.dueDate.toISOString().split("T")[0],
         priority: task.priority,
       });
@@ -57,7 +58,7 @@ const TaskDetails = () => {
       const updatedTask: Task = {
         ...task,
         title: editFormState.title,
-        summary: editFormState.description,
+        description: editFormState.description,
         dueDate: new Date(editFormState.dueDate),
         priority: editFormState.priority,
       };
@@ -142,7 +143,7 @@ const TaskDetails = () => {
             td={task.completed ? "line-through" : "none"}
             className={classes.taskDescription}
           >
-            Description: {task.summary}
+            Description: {task.description}
           </Text>
           <Text
             td={task.completed ? "line-through" : "none"}
