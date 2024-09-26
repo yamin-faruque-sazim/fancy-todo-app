@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { Loader } from "@mantine/core";
 
 import {
   Container,
@@ -93,8 +94,10 @@ const TaskList: React.FC<TaskListProps> = ({
     saveTask(updatedTask);
     setEditFormState({ title: "", description: "", dueDate: "", priority: 1 });
   };
-  const { data: todos } = useGetTodosQuery();
-  console.log("Todos", todos);
+  const { data: todos, isLoading } = useGetTodosQuery();
+  if (isLoading) {
+    return <Loader size="xl" />;
+  }
   return (
     <div>
       <Modal opened={opened} onClose={close} title="Are you sure?" centered>
