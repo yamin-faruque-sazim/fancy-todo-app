@@ -4,9 +4,9 @@ import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 
+import { useAddTodoMutation } from "@/services/todoApi";
 import { Task } from "../../types/Task";
 import classes from "./TaskForm.module.css";
-import { useAddTodoMutation } from "@/services/todoApi";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
@@ -34,10 +34,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
       return;
     }
 
-    const priorityMapping: { [key: number]: 'HIGH' | 'MEDIUM' | 'LOW' } = {
-      1: 'HIGH',
-      2: 'MEDIUM',
-      3: 'LOW',
+    const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
+      1: "HIGH",
+      2: "MEDIUM",
+      3: "LOW",
     };
     const newTask: Task = {
       title,
@@ -45,12 +45,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
       priority: priorityMapping[priority],
       dueDate: dueDate,
       completed: false,
- 
     };
     try {
-      console.log(newTask);
       const result = await addTodo(newTask).unwrap();
-      console.log(result);
+
       setTitle("");
       setDescription("");
       setPriority(2);
