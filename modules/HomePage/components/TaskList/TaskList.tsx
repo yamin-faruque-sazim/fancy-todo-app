@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
-import { useGetTodosQuery } from "@/services/todoApi";
+import { useGetTodosQuery, useUpdateTodoMutation } from "@/services/todoApi";
 
 import {
   Container,
@@ -23,7 +23,7 @@ interface TaskListProps {
   sortedTasks: Task[];
   deleteTask: (id: string) => void;
   toggleCompletedTask: (id: string) => void;
-  startEditingTask: (id: string) => void;
+  startEditingTask: (id: string | null) => void;
   editingTaskId: string | null;
   saveTask: (updatedTask: Task) => void;
 }
@@ -45,19 +45,36 @@ const TaskList: React.FC<TaskListProps> = ({
     priority: "HIGH" | "MEDIUM" | "LOW";
   }>({ title: "", description: "", dueDate: "", priority: "MEDIUM" });
 
+  const { data: todos, isLoading } = useGetTodosQuery();
+  const [updateTodo] = useUpdateTodoMutation();
+
+  const [localTodos, setLocalTodos] = useState<Task[]>([]);
+
+  useEffect(() => {
+    if (todos) {
+      setLocalTodos(todos);
+    }
+  }, [todos]);
+
   useEffect(() => {
     if (editingTaskId) {
-      const taskToEdit = sortedTasks.find((task) => task.id === editingTaskId);
+      const taskToEdit = localTodos.find((task) => task.id === editingTaskId);
+
       if (taskToEdit) {
+        const dueDate =
+          taskToEdit.dueDate instanceof Date
+            ? taskToEdit.dueDate.toISOString().split("T")[0]
+            : "";
+
         setEditFormState({
           title: taskToEdit.title,
           description: taskToEdit.description,
-          dueDate: taskToEdit.dueDate.toISOString().split("T")[0],
-          priority: taskToEdit.priority,
+          dueDate: dueDate,
+          priority: taskToEdit.priority || "MEDIUM",
         });
       }
     }
-  }, [editingTaskId, sortedTasks]);
+  }, [editingTaskId, localTodos]);
 
   const openModalHandler = (id: string) => {
     setTaskIdToDelete(id);
@@ -84,23 +101,47 @@ const TaskList: React.FC<TaskListProps> = ({
   };
 
   const handleEditSubmit = (task: Task) => {
-    const updatedTask: Task = {
-      ...task,
-      title: editFormState.title,
-      description: editFormState.description,
-      dueDate: new Date(editFormState.dueDate),
-      priority: editFormState.priority,
+    const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
+      1: "HIGH",
+      2: "MEDIUM",
+      3: "LOW",
     };
-    saveTask(updatedTask);
-    setEditFormState({
-      title: "",
-      description: "",
-      dueDate: "",
-      priority: "MEDIUM",
-    });
-  };
-  const { data: todos, isLoading } = useGetTodosQuery();
 
+    const updatedTask: Partial<Task> = {
+      title: editFormState.title || task.title,
+      description: editFormState.description || task.description,
+      dueDate: editFormState.dueDate
+        ? new Date(editFormState.dueDate)
+        : task.dueDate,
+      priority:
+        priorityMapping[Number(editFormState.priority)] || task.priority,
+    };
+
+    setLocalTodos((prevTodos) =>
+      prevTodos.map((t) => (t.id === task.id ? { ...t, ...updatedTask } : t))
+    );
+
+    updateTodo({
+      id: task.id,
+      ...updatedTask,
+    })
+      .unwrap()
+      .then(() => {
+        console.log("Task updated successfully");
+
+        setEditFormState({
+          title: "",
+          description: "",
+          dueDate: "",
+          priority: "MEDIUM",
+        });
+
+        startEditingTask(null);
+      })
+      .catch((error) => {
+        console.error("Failed to update task:", error);
+      });
+  };
   if (isLoading) {
     return <Loader size="xl" />;
   }
@@ -116,7 +157,7 @@ const TaskList: React.FC<TaskListProps> = ({
         </Group>
       </Modal>
 
-      {todos?.map((task) => (
+      {localTodos?.map((task) => (
         <Container
           key={task.id}
           pt={10}
@@ -180,6 +221,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   }
                 }}
                 data={PRIORITY_OPTIONS}
+                placeholder="Select priority"
               />
               <Button onClick={() => handleEditSubmit(task)}>Save</Button>
             </div>
