@@ -14,6 +14,7 @@ import {
   Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from '@mantine/notifications';
 
 import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 import { Task } from "../../types/Task";
@@ -127,7 +128,11 @@ const TaskList: React.FC<TaskListProps> = ({
     })
       .unwrap()
       .then(() => {
-        console.log("Task updated successfully");
+        notifications.show({
+          title: 'Success!',
+          message: 'Task successfully updated.',
+          color: 'green'
+        })
 
         setEditFormState({
           title: "",
