@@ -143,7 +143,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   Priority: {task.priority}
                 </Text>
                 <Text className={classes.taskDueDate}>
-                  Due Date: {new Date(task.dueDate ?? "").toDateString()}
+                  Due Date: {task.dueDate ? new Date(task.dueDate).toDateString() : "No due date"}
                 </Text>
               </Group>
             </div>
