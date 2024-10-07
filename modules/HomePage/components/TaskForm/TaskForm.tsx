@@ -4,6 +4,7 @@ import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 
+import { useAddTodoMutation } from "@/services/todoApi";
 import { Task } from "../../types/Task";
 import classes from "./TaskForm.module.css";
 
@@ -15,7 +16,6 @@ interface TaskFormProps {
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({
-  addTask,
   deleteCompletedTasks,
   setFilter,
   filter,
@@ -25,25 +25,37 @@ const TaskForm: React.FC<TaskFormProps> = ({
   const [priority, setPriority] = useState<number>(2);
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [addTodo] = useAddTodoMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || !priority || !dueDate) {
       alert("Please fill in all fields");
       return;
     }
+
+    const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
+      1: "HIGH",
+      2: "MEDIUM",
+      3: "LOW",
+    };
     const newTask: Task = {
-      id: new Date().toISOString(),
       title,
       description,
-      priority,
-      dueDate,
+      priority: priorityMapping[priority],
+      dueDate: dueDate,
       completed: false,
     };
-    addTask(newTask);
-    setTitle("");
-    setDescription("");
-    setPriority(2);
-    setDueDate(null);
+    try {
+      const result = await addTodo(newTask).unwrap();
+
+      setTitle("");
+      setDescription("");
+      setPriority(2);
+      setDueDate(null);
+    } catch (error) {
+      console.error("Failed to add the todo:", error);
+    }
   };
 
   return (
