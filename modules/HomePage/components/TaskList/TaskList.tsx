@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
-import { useGetTodosQuery, useUpdateTodoMutation } from "@/services/todoApi";
+import {
+  useDeleteTodoMutation,
+  useGetTodosQuery,
+  useUpdateTodoMutation,
+} from "@/services/todoApi";
 
 import {
   Container,
@@ -14,7 +18,7 @@ import {
   Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { notifications } from '@mantine/notifications';
+import { notifications } from "@mantine/notifications";
 
 import { PRIORITY_OPTIONS } from "@/shared/constants/taskContstants";
 import { Task } from "../../types/Task";
@@ -48,8 +52,8 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const { data: todos, isLoading } = useGetTodosQuery();
   const [updateTodo] = useUpdateTodoMutation();
-
   const [localTodos, setLocalTodos] = useState<Task[]>([]);
+  const [deleteTodo] = useDeleteTodoMutation();
 
   useEffect(() => {
     if (todos) {
@@ -82,11 +86,27 @@ const TaskList: React.FC<TaskListProps> = ({
     open();
   };
 
-  const deleteTaskHandler = () => {
+  const deleteTaskHandler = async () => {
     if (taskIdToDelete) {
-      deleteTask(taskIdToDelete);
-      close();
-      setTaskIdToDelete(null);
+      try {
+        await deleteTodo(taskIdToDelete).unwrap();
+
+        notifications.show({
+          title: "Deleted",
+          message: "Task successfully deleted.",
+          color: "red",
+        });
+      } catch (error) {
+        notifications.show({
+          title: "Error",
+          message: "Failed to delete task.",
+          color: "red",
+        });
+        console.error("Failed to delete task:", error);
+      } finally {
+        close();
+        setTaskIdToDelete(null);
+      }
     }
   };
 
@@ -129,10 +149,10 @@ const TaskList: React.FC<TaskListProps> = ({
       .unwrap()
       .then(() => {
         notifications.show({
-          title: 'Success!',
-          message: 'Task successfully updated.',
-          color: 'green'
-        })
+          title: "Success!",
+          message: "Task successfully updated.",
+          color: "green",
+        });
 
         setEditFormState({
           title: "",
