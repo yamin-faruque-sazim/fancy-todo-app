@@ -45,7 +45,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
       description,
       priority: priorityMapping[priority],
       dueDate: dueDate,
-      completed: false,
+      isCompleted: false,
  
     };
     try {
