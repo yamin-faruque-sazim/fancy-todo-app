@@ -5,11 +5,11 @@ import { Task } from "@/modules/HomePage/types/Task";
 export const todoApi = createApi({
   reducerPath: "todoApi",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
-  tagTypes: ['Todo'],
+  tagTypes: ['Todos'],
   endpoints: (builder) => ({
     getTodos: builder.query<Task[], void>({
       query: () => "/todos",
-      providesTags: ["Todo"],
+      providesTags: ["Todos"],
     }),
     addTodo: builder.mutation({
       query: (newTodo) => ({
@@ -17,9 +17,17 @@ export const todoApi = createApi({
         method: "POST",
         body: newTodo,
       }),
-      invalidatesTags: ["Todo"],
+      invalidatesTags: ["Todos"],
+    }),
+    updateTodo: builder.mutation({
+      query: ({ id, ...updatedTodo }) => ({
+        url: `/todos/${id}`,
+        method: "PUT",
+        body: updatedTodo,
+      }),
+      invalidatesTags: ["Todos"],
     }),
   }),
 });
 
-export const { useGetTodosQuery, useAddTodoMutation } = todoApi;
+export const { useGetTodosQuery, useAddTodoMutation, useUpdateTodoMutation  } = todoApi;
