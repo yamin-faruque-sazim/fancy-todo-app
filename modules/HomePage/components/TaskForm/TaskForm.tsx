@@ -4,15 +4,14 @@ import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
 import { notifications } from "@mantine/notifications";
-
-import { useAddTodoMutation } from "@/services/todoApi";
-import { Task } from "../../types/Task";
-import classes from "./TaskForm.module.css";
 import {
   useAddTodoMutation,
   useDeleteCompletedTodosMutation,
   useGetTodosQuery,
 } from "@/services/todoApi";
+
+import { Task } from "../../types/Task";
+import classes from "./TaskForm.module.css";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
@@ -35,7 +34,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
   const [deleteCompletedTodos] = useDeleteCompletedTodosMutation();
   const { data: todos = [] } = useGetTodosQuery();
 
-  const hasCompletedTasks = todos.some(task => task.isCompleted);
+  const hasCompletedTasks = todos.some((task) => task.isCompleted);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +171,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <Button
             className={classes.formButton}
             onClick={handleDeleteCompletedTasks}
-            disabled={!hasCompletedTasks} 
+            disabled={!hasCompletedTasks}
           >
             Clear Completed
           </Button>
