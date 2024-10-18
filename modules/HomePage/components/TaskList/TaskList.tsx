@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
 import {
+  useCompleteTodoMutation,
   useDeleteTodoMutation,
   useGetTodosQuery,
   useUpdateTodoMutation,
@@ -54,6 +55,7 @@ const TaskList: React.FC<TaskListProps> = ({
   const [updateTodo] = useUpdateTodoMutation();
   const [localTodos, setLocalTodos] = useState<Task[]>([]);
   const [deleteTodo] = useDeleteTodoMutation();
+  const [completeTodo] = useCompleteTodoMutation();
 
   useEffect(() => {
     if (todos) {
@@ -110,8 +112,26 @@ const TaskList: React.FC<TaskListProps> = ({
     }
   };
 
-  const isCompleteHandler = (id: string) => {
-    toggleCompletedTask(id);
+  const isCompleteHandler = async (id: string) => {
+    try {
+      await completeTodo(id).unwrap();
+
+      setLocalTodos((prevTodos) =>
+        prevTodos.map((t) => (t.id === id ? { ...t, isCompleted: true } : t))
+      );
+
+      notifications.show({
+        title: "Task Completed",
+        message: "Task marked as complete.",
+        color: "green",
+      });
+    } catch (error) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to mark task as complete.",
+        color: "red",
+      });
+    }
   };
 
   const handleEditChange = (
@@ -192,19 +212,19 @@ const TaskList: React.FC<TaskListProps> = ({
           <Link className={classes.taskLink} href={`/task/${task.id}`} passHref>
             <div>
               <Text
-                td={task.completed ? "line-through" : "none"}
+                td={task.isCompleted ? "line-through" : "none"}
                 className={classes.taskTitle}
               >
                 Title: {task.title}
               </Text>
               <Text
-                td={task.completed ? "line-through" : "none"}
+                td={task.isCompleted ? "line-through" : "none"}
                 className={classes.taskDescription}
                 mt={15}
               >
                 Description: {task.description}
               </Text>
-              <Group td={task.completed ? "line-through" : "none"}>
+              <Group td={task.isCompleted ? "line-through" : "none"}>
                 <Text className={classes.taskPriority}>
                   Priority: {task.priority}
                 </Text>
@@ -254,21 +274,21 @@ const TaskList: React.FC<TaskListProps> = ({
             <Group className={classes.taskButtons}>
               <Button
                 color="red"
-                style={{ display: task.completed ? "none" : "inline-block" }}
+                style={{ display: task.isCompleted ? "none" : "inline-block" }}
                 onClick={() => openModalHandler(task.id ?? "")}
               >
                 Delete
               </Button>
               <Button
                 color="green"
-                style={{ display: task.completed ? "none" : "inline-block" }}
+                style={{ display: task.isCompleted ? "none" : "inline-block" }}
                 onClick={() => isCompleteHandler(task.id ?? "")}
               >
                 Complete
               </Button>
               <Button
                 color="orange"
-                style={{ display: task.completed ? "none" : "inline-block" }}
+                style={{ display: task.isCompleted ? "none" : "inline-block" }}
                 onClick={() => startEditingTask(task.id ?? "")}
               >
                 Edit
