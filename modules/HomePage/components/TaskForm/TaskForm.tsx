@@ -3,11 +3,15 @@ import React, { useState } from "react";
 import { DateInput } from "@mantine/dates";
 import { Container, Select, TextInput, Button, Group } from "@mantine/core";
 import "@mantine/dates/styles.css";
+import { notifications } from "@mantine/notifications";
+import {
+  useAddTodoMutation,
+  useDeleteCompletedTodosMutation,
+  useGetTodosQuery,
+} from "@/services/todoApi";
 
-import { useAddTodoMutation } from "@/services/todoApi";
 import { Task } from "../../types/Task";
 import classes from "./TaskForm.module.css";
-import { useAddTodoMutation } from "@/services/todoApi";
 
 interface TaskFormProps {
   addTask: (task: Task) => void;
@@ -27,6 +31,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const [addTodo] = useAddTodoMutation();
+  const [deleteCompletedTodos] = useDeleteCompletedTodosMutation();
+  const { data: todos = [] } = useGetTodosQuery();
+
+  const hasCompletedTasks = todos.some((task) => task.isCompleted);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +54,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
       priority: priorityMapping[priority],
       dueDate: dueDate,
       isCompleted: false,
- 
     };
     try {
       const result = await addTodo(newTask).unwrap();
@@ -57,6 +64,24 @@ const TaskForm: React.FC<TaskFormProps> = ({
       setDueDate(null);
     } catch (error) {
       console.error("Failed to add the todo:", error);
+    }
+  };
+
+  const handleDeleteCompletedTasks = async () => {
+    try {
+      await deleteCompletedTodos().unwrap();
+      notifications.show({
+        title: "Cleared Completed Tasks",
+        message: "All completed tasks have been deleted.",
+        color: "red",
+      });
+    } catch (error) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete completed tasks.",
+        color: "red",
+      });
+      console.error("Failed to delete completed tasks:", error);
     }
   };
 
@@ -143,7 +168,11 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <Button className={classes.formButton} type="submit">
             Add Task
           </Button>
-          <Button className={classes.formButton} onClick={deleteCompletedTasks}>
+          <Button
+            className={classes.formButton}
+            onClick={handleDeleteCompletedTasks}
+            disabled={!hasCompletedTasks}
+          >
             Clear Completed
           </Button>
           <Select
