@@ -43,11 +43,17 @@ const TaskForm: React.FC<TaskFormProps> = ({
       return;
     }
 
+    // const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
+    //   1: "HIGH",
+    //   2: "MEDIUM",
+    //   3: "LOW",
+    // };
     const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
-      1: "HIGH",
-      2: "MEDIUM",
-      3: "LOW",
+      3: "HIGH", // 3 represents High priority
+      2: "MEDIUM", // 2 represents Medium priority
+      1: "LOW", // 1 represents Low priority
     };
+
     const newTask: Task = {
       title,
       description,
@@ -141,9 +147,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
             value={String(priority)}
             onChange={(value) => setPriority(Number(value))}
             data={[
-              { value: "1", label: "High" },
-              { value: "2", label: "Medium" },
-              { value: "3", label: "Low" },
+              { value: "3", label: "High" },  
+              { value: "2", label: "Medium" }, 
+              { value: "1", label: "Low" },
             ]}
             required
           />

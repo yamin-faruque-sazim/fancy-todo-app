@@ -57,6 +57,12 @@ const TaskList: React.FC<TaskListProps> = ({
   const [deleteTodo] = useDeleteTodoMutation();
   const [completeTodo] = useCompleteTodoMutation();
 
+  const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
+    3: "HIGH",
+    2: "MEDIUM",
+    1: "LOW",
+  };
+
   useEffect(() => {
     if (todos) {
       setLocalTodos(todos);
@@ -141,11 +147,12 @@ const TaskList: React.FC<TaskListProps> = ({
     setEditFormState((prev) => ({ ...prev, [name]: value }));
   };
 
+ 
   const handleEditSubmit = (task: Task) => {
-    const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
-      1: "HIGH",
-      2: "MEDIUM",
-      3: "LOW",
+    const priorityMappingReverse: { [key: string]: number } = {
+      HIGH: 3,
+      MEDIUM: 2,
+      LOW: 1,
     };
 
     const updatedTask: Partial<Task> = {
@@ -154,8 +161,7 @@ const TaskList: React.FC<TaskListProps> = ({
       dueDate: editFormState.dueDate
         ? new Date(editFormState.dueDate)
         : task.dueDate,
-      priority:
-        priorityMapping[Number(editFormState.priority)] || task.priority,
+      priority: priorityMappingReverse[editFormState.priority] || task.priority, 
     };
 
     setLocalTodos((prevTodos) =>
@@ -187,6 +193,7 @@ const TaskList: React.FC<TaskListProps> = ({
         console.error("Failed to update task:", error);
       });
   };
+
   if (isLoading) {
     return <Loader size="xl" />;
   }
@@ -226,10 +233,14 @@ const TaskList: React.FC<TaskListProps> = ({
               </Text>
               <Group td={task.isCompleted ? "line-through" : "none"}>
                 <Text className={classes.taskPriority}>
-                  Priority: {task.priority}
+                
+                  Priority: {priorityMapping[task.priority] || "Unknown"}
                 </Text>
                 <Text className={classes.taskDueDate}>
-                  Due Date: {task.dueDate ? new Date(task.dueDate).toDateString() : "No due date"}
+                  Due Date:{" "}
+                  {task.dueDate
+                    ? new Date(task.dueDate).toDateString()
+                    : "No due date"}
                 </Text>
               </Group>
             </div>
@@ -254,14 +265,15 @@ const TaskList: React.FC<TaskListProps> = ({
                 value={editFormState.dueDate}
                 onChange={handleEditChange}
               />
+
               <Select
                 name="priority"
-                value={editFormState.priority}
+                value={String(editFormState.priority)} 
                 onChange={(value) => {
                   if (value) {
                     setEditFormState((prev) => ({
                       ...prev,
-                      priority: value as "HIGH" | "MEDIUM" | "LOW",
+                      priority: priorityMapping[Number(value)],
                     }));
                   }
                 }}
