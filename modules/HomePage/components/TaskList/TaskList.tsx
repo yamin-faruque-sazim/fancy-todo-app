@@ -32,18 +32,18 @@ interface TaskListProps {
   startEditingTask: (id: string | null) => void;
   editingTaskId: string | null;
   saveTask: (updatedTask: Task) => void;
+  filter: string;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
-  sortedTasks,
-  deleteTask,
-  toggleCompletedTask,
+  filter,
+
   startEditingTask,
   editingTaskId,
-  saveTask,
 }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
+
   const [editFormState, setEditFormState] = useState<{
     title: string;
     description: string;
@@ -51,7 +51,11 @@ const TaskList: React.FC<TaskListProps> = ({
     priority: "HIGH" | "MEDIUM" | "LOW";
   }>({ title: "", description: "", dueDate: "", priority: "MEDIUM" });
 
-  const { data: todos, isLoading } = useGetTodosQuery();
+  const {
+    data: todos = [],
+    isLoading,
+    isError,
+  } = useGetTodosQuery({ filterBy: filter });
   const [updateTodo] = useUpdateTodoMutation();
   const [localTodos, setLocalTodos] = useState<Task[]>([]);
   const [deleteTodo] = useDeleteTodoMutation();
@@ -147,7 +151,6 @@ const TaskList: React.FC<TaskListProps> = ({
     setEditFormState((prev) => ({ ...prev, [name]: value }));
   };
 
- 
   const handleEditSubmit = (task: Task) => {
     const priorityMappingReverse: { [key: string]: number } = {
       HIGH: 3,
@@ -161,7 +164,7 @@ const TaskList: React.FC<TaskListProps> = ({
       dueDate: editFormState.dueDate
         ? new Date(editFormState.dueDate)
         : task.dueDate,
-      priority: priorityMappingReverse[editFormState.priority] || task.priority, 
+      priority: priorityMappingReverse[editFormState.priority] || task.priority,
     };
 
     setLocalTodos((prevTodos) =>
@@ -233,7 +236,6 @@ const TaskList: React.FC<TaskListProps> = ({
               </Text>
               <Group td={task.isCompleted ? "line-through" : "none"}>
                 <Text className={classes.taskPriority}>
-                
                   Priority: {priorityMapping[task.priority] || "Unknown"}
                 </Text>
                 <Text className={classes.taskDueDate}>
@@ -268,7 +270,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
               <Select
                 name="priority"
-                value={String(editFormState.priority)} 
+                value={String(editFormState.priority)}
                 onChange={(value) => {
                   if (value) {
                     setEditFormState((prev) => ({
@@ -280,6 +282,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 data={PRIORITY_OPTIONS}
                 placeholder="Select priority"
               />
+
               <Button onClick={() => handleEditSubmit(task)}>Save</Button>
             </div>
           ) : (
