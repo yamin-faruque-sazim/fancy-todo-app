@@ -7,40 +7,6 @@ export const todoApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   tagTypes: ["Todos"],
   endpoints: (builder) => ({
-    // getTodos: builder.query<Task[], void>({
-    //   query: () => "/todos",
-    //   providesTags: ["Todos"],
-    // }),
-    // getTodos: builder.query<
-    //   Task[],
-    //   {
-    //     filterBy?: string;
-    //     priority?: string;
-    //     sortOrder?: string;
-    //     dueDateSort?: string;
-    //     isCompleted?: string;
-    //   }
-    // >({
-    //   query: ({
-    //     filterBy,
-    //     priority,
-    //     sortOrder,
-    //     dueDateSort,
-    //     isCompleted,
-    //   } = {}) => {
-    //     const queryParams = new URLSearchParams();
-
-    //     if (filterBy) queryParams.append("filterBy", filterBy);
-    //     if (priority) queryParams.append("priority", priority);
-    //     if (sortOrder) queryParams.append("sortOrder", sortOrder);
-    //     if (dueDateSort) queryParams.append("dueDateSort", dueDateSort);
-    //     if (isCompleted) queryParams.append("isCompleted", isCompleted);
-
-    //     return `/todos?${queryParams.toString()}`;
-    //   },
-    //   providesTags: ["Todos"],
-    // }),
-
     getTodos: builder.query<Task[], { filterBy?: string }>({
       query: ({ filterBy = "all" }) => {
         const queryParams = new URLSearchParams();
