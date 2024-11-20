@@ -20,11 +20,7 @@ interface TaskFormProps {
   filter: string;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({
-  deleteCompletedTasks,
-  setFilter,
-  filter,
-}) => {
+const TaskForm: React.FC<TaskFormProps> = ({ setFilter, filter }) => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [priority, setPriority] = useState<number>(2);
@@ -32,7 +28,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   const [addTodo] = useAddTodoMutation();
   const [deleteCompletedTodos] = useDeleteCompletedTodosMutation();
-  const { data: todos = [] } = useGetTodosQuery();
+  const { data: todos = [] } = useGetTodosQuery({ filterBy: "all" });
 
   const hasCompletedTasks = todos.some((task) => task.isCompleted);
 
@@ -44,10 +40,11 @@ const TaskForm: React.FC<TaskFormProps> = ({
     }
 
     const priorityMapping: { [key: number]: "HIGH" | "MEDIUM" | "LOW" } = {
-      1: "HIGH",
+      3: "HIGH",
       2: "MEDIUM",
-      3: "LOW",
+      1: "LOW",
     };
+
     const newTask: Task = {
       title,
       description,
@@ -141,9 +138,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
             value={String(priority)}
             onChange={(value) => setPriority(Number(value))}
             data={[
-              { value: "1", label: "High" },
+              { value: "3", label: "High" },
               { value: "2", label: "Medium" },
-              { value: "3", label: "Low" },
+              { value: "1", label: "Low" },
             ]}
             required
           />

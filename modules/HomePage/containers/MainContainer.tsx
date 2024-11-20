@@ -3,11 +3,10 @@ import useTaskOperations from "@/shared/utils/usetaskOperations";
 
 import TaskForm from "../components/TaskForm/TaskForm";
 import TaskList from "../components/TaskList/TaskList";
-
+import { useState } from "react";
 
 const MainContainer: React.FC = () => {
   const {
-    filter,
     filteredTasks,
     addTask,
     deleteTask,
@@ -17,11 +16,11 @@ const MainContainer: React.FC = () => {
     saveTask,
     undo,
     redo,
-    setFilter,
     editingTaskId,
     history,
     redoArray,
   } = useTaskOperations();
+  const [filter, setFilter] = useState<string>("all");
 
   return (
     <Container>
@@ -60,6 +59,7 @@ const MainContainer: React.FC = () => {
         startEditingTask={startEditingTask}
         editingTaskId={editingTaskId}
         saveTask={saveTask}
+        filter={filter}
       />
     </Container>
   );
